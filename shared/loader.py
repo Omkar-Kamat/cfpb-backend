@@ -32,8 +32,18 @@ def load_all(base: str = "artifacts") -> None:
     print("Loading KMeans model...")
     ARTIFACTS["kmeans"] = joblib.load(p / "kmeans_k3.pkl")
 
-    print("Loading UMAP reducer...")
-    ARTIFACTS["umap"] = joblib.load(p / "umap_reducer.pkl")
+    # UMAP is 108MB — load only if the file exists and memory allows
+    umap_path = p / "umap_reducer.pkl"
+    if umap_path.exists():
+        try:
+            print("Loading UMAP reducer (108MB)...")
+            ARTIFACTS["umap"] = joblib.load(umap_path)
+        except Exception as e:
+            print(f"⚠ UMAP load failed (non-fatal): {e}")
+            ARTIFACTS["umap"] = None
+    else:
+        print("⚠ UMAP reducer not found — /cluster will return umap_x=0, umap_y=0")
+        ARTIFACTS["umap"] = None
 
     print("Loading severity model...")
     ARTIFACTS["severity"] = joblib.load(p / "severity_model.pkl")

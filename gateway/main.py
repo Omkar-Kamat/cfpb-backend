@@ -52,7 +52,7 @@ async def health():
 
     # Check required keys
     required = [
-        "tfidf", "kmeans", "umap", "severity",
+        "tfidf", "kmeans", "severity",
         "resolution_clf", "label_encoder",
         "faiss_index", "embeddings", "df",
     ]

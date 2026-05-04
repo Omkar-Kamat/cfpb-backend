@@ -8,7 +8,10 @@ def predict_cluster(embedding: np.ndarray) -> dict:
     umap  = ARTIFACTS["umap"]
 
     cluster_id  = int(km.predict(embedding.reshape(1, -1))[0])
-    umap_coords = umap.transform(embedding.reshape(1, -1))[0]
+    if umap is not None:
+        umap_coords = umap.transform(embedding.reshape(1, -1))[0]
+    else:
+        umap_coords = [0.0, 0.0]
 
     # O(1) lookup — computed once at startup
     top_keywords = ARTIFACTS["cluster_keywords"].get(cluster_id, [])
