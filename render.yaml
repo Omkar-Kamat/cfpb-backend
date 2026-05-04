@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: cfpb-backend
+    runtime: python
+    plan: starter
+    region: oregon
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel &&
+      pip install -r requirements.txt &&
+      python -m spacy download en_core_web_sm &&
+      python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('omw-1.4')"
+    startCommand: uvicorn gateway.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: API_KEY
+        sync: false                     
+      - key: HF_BERT_URL
+        value: https://OmkarKamat-cfpb-bert-sentiment.hf.space
+      - key: HF_MINILM_URL
+        value: https://OmkarKamat-cfpb-minilm-embed.hf.space
+      - key: HF_T5_URL
+        value: https://OmkarKamat-cfpb-t5-summarizer.hf.space
+      - key: PYTHON_VERSION
+        value: 3.11.9
